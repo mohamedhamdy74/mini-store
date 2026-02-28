@@ -1,7 +1,8 @@
 'use client'
 
 import { useGetProducts } from "@/hooks/useGetProducts";
-import { ProductCard, ProductCardSkeleton } from "./product-card";
+import { ProductCard } from "./product-card";
+import { ProductCardSkeleton } from "./product-card-skeleton";
 import { Product } from "@/lib/types";
 import { Card, CardContent } from "@/components/ui/card"
 import {
@@ -17,7 +18,7 @@ import { Button } from "./ui/button";
 export default function ProductsSection() {
     const { data: products, isLoading } = useGetProducts()
     return (
-        <section className="container mx-auto my-5 px-15 md:px-15 lg:px-30">
+        <section className="container mx-auto my-5 px-4 md:px-8 lg:px-12">
             <Link href="/products" > <Button className="my-5 cursor-pointer">Show All Products</Button></Link>
             <Carousel
                 opts={{

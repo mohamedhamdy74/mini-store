@@ -10,7 +10,7 @@ import {
     PaginationPrevious,
 } from "@/components/ui/pagination";
 import { Suspense } from "react";
-import { ProductCardSkeleton } from "@/components/product-card";
+import { ProductCardSkeleton } from "@/components/product-card-skeleton";
 
 export const metadata = {
     title: "All Products | MiniStore",

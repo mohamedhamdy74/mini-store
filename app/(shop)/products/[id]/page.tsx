@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Star, ShoppingCart, ShieldCheck, Truck, RotateCcw } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 
+import { ImageGallery } from "@/components/image-gallery";
+
 interface Props {
     params: Promise<{ id: string }>;
 }
@@ -21,32 +23,15 @@ export default async function ProductDetailsPage({ params }: Props) {
     const { id } = await params;
     const { data: product }: { data: Product } = await getProductById(id);
 
+    // Combine imageCover with images array if they are different
+    const allImages = [product.imageCover, ...product.images.filter(img => img !== product.imageCover)];
+
     return (
-        <main className="container mx-auto px-4 py-12 md:px-8 lg:px-12">
-            <div className="grid gap-12 lg:grid-cols-2">
+        <main className="container mx-auto px-4 py-8 md:px-8 md:py-12 lg:px-12">
+            <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-12">
                 {/* Image Gallery */}
-                <div className="space-y-4">
-                    <div className="relative aspect-square overflow-hidden rounded-3xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
-                        <Image
-                            src={product.imageCover}
-                            alt={product.title}
-                            fill
-                            className="object-contain p-12 transition-transform duration-500 hover:scale-105"
-                            priority
-                        />
-                    </div>
-                    <div className="grid grid-cols-4 gap-4">
-                        {product.images.slice(0, 4).map((img, i) => (
-                            <div key={i} className="relative aspect-square overflow-hidden rounded-2xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 cursor-pointer hover:border-zinc-400 dark:hover:border-zinc-500 transition-colors">
-                                <Image
-                                    src={img}
-                                    alt={`${product.title} - ${i + 1}`}
-                                    fill
-                                    className="object-contain p-2"
-                                />
-                            </div>
-                        ))}
-                    </div>
+                <div className="min-w-0">
+                    <ImageGallery images={allImages} title={product.title} />
                 </div>
 
                 {/* Product Info */}
@@ -76,7 +61,7 @@ export default async function ProductDetailsPage({ params }: Props) {
                             <Separator orientation="vertical" className="h-4" />
                             <span className="text-zinc-500 text-sm">{product.ratingsQuantity} reviews</span>
                             <Separator orientation="vertical" className="h-4" />
-                            <span className="text-zinc-500 text-sm font-medium">{product.sold} sold</span>
+
                         </div>
                     </div>
 

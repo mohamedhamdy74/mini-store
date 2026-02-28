@@ -55,23 +55,3 @@ export function ProductCard({ product }: ProductCardProps) {
     );
 }
 
-export function ProductCardSkeleton() {
-    return (
-        <Card className="overflow-hidden border-zinc-200 dark:border-zinc-800">
-            <CardHeader className="p-0">
-                <div className="aspect-square animate-pulse bg-zinc-100 dark:bg-zinc-900" />
-            </CardHeader>
-            <CardContent className="space-y-4 p-4">
-                <div className="h-4 w-24 animate-pulse rounded bg-zinc-100 dark:bg-zinc-900" />
-                <div className="space-y-2">
-                    <div className="h-4 w-full animate-pulse rounded bg-zinc-100 dark:bg-zinc-900" />
-                    <div className="h-4 w-2/3 animate-pulse rounded bg-zinc-100 dark:bg-zinc-900" />
-                </div>
-            </CardContent>
-            <CardFooter className="flex items-center justify-between p-4">
-                <div className="h-8 w-16 animate-pulse rounded bg-zinc-100 dark:bg-zinc-900" />
-                <div className="h-10 w-24 animate-pulse rounded-full bg-zinc-100 dark:bg-zinc-900" />
-            </CardFooter>
-        </Card>
-    );
-}

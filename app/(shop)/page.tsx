@@ -2,7 +2,7 @@
 
 import { Suspense } from "react";
 import Image from "next/image";
-import { ProductCardSkeleton } from "@/components/product-card";
+import { ProductCardSkeleton } from "@/components/product-card-skeleton";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -29,7 +29,7 @@ export default function Home() {
         <section className="relative px-4 py-8 md:py-12">
           <div className="container mx-auto overflow-hidden rounded-[2.5rem] bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900">
             <div className="grid items-center gap-8 md:grid-cols-2">
-              <div className="p-8 md:p-16">
+              <div className="p-8 md:p-5">
                 <Badge variant="secondary" className="mb-6 gap-2 rounded-full px-4 py-1.5 text-xs font-semibold uppercase tracking-wider">
                   <Sparkles className="h-3.5 w-3.5" />
                   New Collection 2026
@@ -59,7 +59,7 @@ export default function Home() {
                   className="object-cover object-center transition-transform duration-700 hover:scale-105"
                   priority
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-zinc-900/40 to-transparent dark:from-zinc-100/40" />
+                <div className="absolute inset-0 bg-linear-to-t from-zinc-900/40 to-transparent dark:from-zinc-100/40" />
               </div>
             </div>
           </div>
