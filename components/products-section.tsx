@@ -17,7 +17,7 @@ import { Button } from "./ui/button";
 export default function ProductsSection() {
     const { data: products, isLoading } = useGetProducts()
     return (
-        <section className="container mx-auto my-5 px-5 md:px-15 lg:px-30">
+        <section className="container mx-auto my-5 px-15 md:px-15 lg:px-30">
             <Link href="/products" > <Button className="my-5 cursor-pointer">Show All Products</Button></Link>
             <Carousel
                 opts={{
@@ -33,7 +33,7 @@ export default function ProductsSection() {
                             </CarouselItem>
                         ))
                         : products.data.map((product: Product) => (
-                            <CarouselItem key={product.id} className="basis-1/2 lg:basis-1/3">
+                            <CarouselItem key={product.id} className="basis lg:basis-1/3">
 
                                 <ProductCard key={product.id} product={product} />
 
