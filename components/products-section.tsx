@@ -27,20 +27,14 @@ export default function ProductsSection() {
                 className=""
             >
                 <CarouselContent>
-                    {isLoading
-                        ? Array.from({ length: 8 }).map((_, i) => (
-                            <CarouselItem>
-                                <ProductCardSkeleton key={i} />
-                            </CarouselItem>
-                        ))
-                        : products.data.map((product: Product) => (
-                            <CarouselItem key={product.id} className="basis lg:basis-1/3">
+                    {products.data.map((product: Product) => (
+                        <CarouselItem key={product.id} className="basis lg:basis-1/3">
 
-                                <ProductCard key={product.id} product={product} />
+                            <ProductCard key={product.id} product={product} />
 
 
-                            </CarouselItem>
-                        ))}
+                        </CarouselItem>
+                    ))}
                 </CarouselContent>
                 <CarouselPrevious />
                 <CarouselNext />

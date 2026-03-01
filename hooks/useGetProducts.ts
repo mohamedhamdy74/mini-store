@@ -1,10 +1,11 @@
 // src/features/products/hooks/useGetProducts.ts
-import { useQuery } from '@tanstack/react-query';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { getProducts } from '@/lib/api/products';
 
 export const useGetProducts = () => {
-    return useQuery({
+    return useSuspenseQuery({
         queryKey: ['products'],
         queryFn: () => getProducts(),
+
     });
 };
