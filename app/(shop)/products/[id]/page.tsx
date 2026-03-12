@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Star, ShoppingCart, ShieldCheck, Truck, RotateCcw } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import { addToWishlist } from "@/lib/actions/wishlist";
 
 import { ImageGallery } from "@/components/image-gallery";
 
@@ -86,7 +87,7 @@ export default async function ProductDetailsPage({ params }: Props) {
                             <ShoppingCart className="h-6 w-6" />
                             Add to Shopping Cart
                         </Button>
-                        <Button size="lg" variant="outline" className="h-16 rounded-full text-lg font-bold">
+                        <Button onClick={() => addToWishlist(product.id)} size="lg" variant="outline" className="h-16 rounded-full text-lg font-bold">
                             Wishlist
                         </Button>
                     </div>
