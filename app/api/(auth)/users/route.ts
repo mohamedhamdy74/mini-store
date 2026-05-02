@@ -1,15 +1,25 @@
-import { NextResponse } from "next/server";
+import { NextResponse } from "next/server"
+import { API_BASE_URL } from "@/lib/constants"
 
 export async function GET() {
-    const res = await fetch('https://ecommerce.routemisr.com/api/v1/users', {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
+    try {
+        const res = await fetch(`${API_BASE_URL}/users`, {
+            headers: { 'Content-Type': 'application/json' }
+        })
+
+        if (!res.ok) {
+            return NextResponse.json(
+                { message: 'Failed to fetch users' },
+                { status: res.status }
+            )
         }
-    })
-    if (!res.ok) {
-        return NextResponse.json({ message: 'failed to fetch users' }, { status: 500 })
+
+        const result = await res.json()
+        return NextResponse.json(result)
+    } catch {
+        return NextResponse.json(
+            { message: 'Internal Server Error' },
+            { status: 500 }
+        )
     }
-    const result: any = await res.json()
-    return NextResponse.json(result)
 }

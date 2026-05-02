@@ -1,42 +1,62 @@
 'use server'
-import { cookies } from "next/headers";
-export async function addUserAddress(formData: FormData) {
+
+import { cookies } from "next/headers"
+import { revalidatePath } from "next/cache"
+import { API_BASE_URL } from "@/lib/constants"
+import type { ActionResult } from "@/lib/types"
+
+async function getToken() {
+    const cookieStore = await cookies()
+    return cookieStore.get('token')?.value
+}
+
+export async function addUserAddress(formData: FormData): Promise<ActionResult> {
     try {
-        const data = Object.fromEntries(formData.entries());
-        const cookieStore = await cookies()
-        const token = cookieStore.get('token')?.value
-        const res = await fetch('https://ecommerce.routemisr.com/api/v1/addresses', {
+        const token = await getToken()
+        if (!token) return { success: false, message: 'Please login first' }
+
+        const data = Object.fromEntries(formData.entries())
+
+        const res = await fetch(`${API_BASE_URL}/addresses`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'token': token || ''
+                'token': token
             },
             body: JSON.stringify(data)
         })
+        const result = await res.json()
 
-        const result: any = await res.json()
-        return result
-    } catch (error) {
-        console.log(error);
-        return error
+        if (result.status === 'success') {
+            revalidatePath('/addresses')
+            return { success: true, message: 'Address added successfully', data: result.data }
+        }
+        return { success: false, message: result.message || 'Failed to add address' }
+    } catch {
+        return { success: false, message: 'Network error. Please try again.' }
     }
 }
-export async function deleteAddress(addressId: string) {
+
+export async function deleteAddress(addressId: string): Promise<ActionResult> {
     try {
-        const cookieStore = await cookies()
-        const token = cookieStore.get('token')?.value
-        const res = await fetch(`https://ecommerce.routemisr.com/api/v1/addresses/${addressId}`, {
+        const token = await getToken()
+        if (!token) return { success: false, message: 'Please login first' }
+
+        const res = await fetch(`${API_BASE_URL}/addresses/${addressId}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
-                'token': token || ''
+                'token': token
             },
         })
-        const result: any = await res.json()
-        console.log(result);
-        return result
-    } catch (error) {
-        console.log(error);
-        return error
+        const result = await res.json()
+
+        if (result.status === 'success') {
+            revalidatePath('/addresses')
+            return { success: true, message: 'Address removed', data: result.data }
+        }
+        return { success: false, message: result.message || 'Failed to remove address' }
+    } catch {
+        return { success: false, message: 'Network error. Please try again.' }
     }
 }

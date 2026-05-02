@@ -1,59 +1,76 @@
 'use server'
+
 import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
-export async function createOrder(cartId: string, addressDetails: { details: string, phone: string, city: string }) {
+import { API_BASE_URL, BASE_URL } from "@/lib/constants"
+import type { ActionResult } from "@/lib/types"
+
+async function getToken() {
+    const cookieStore = await cookies()
+    return cookieStore.get('token')?.value
+}
+
+export async function createOrder(
+    cartId: string,
+    addressDetails: { details: string; phone: string; city: string }
+): Promise<ActionResult> {
     try {
-        const cookieStore = await cookies()
-        const token = cookieStore.get('token')?.value
-        const res = await fetch(`https://ecommerce.routemisr.com/api/v1/orders/${cartId}`, {
+        const token = await getToken()
+        if (!token) return { success: false, message: 'Please login first' }
+
+        const res = await fetch(`${API_BASE_URL}/orders/${cartId}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'token': token || ''
+                'token': token
             },
             body: JSON.stringify({ shippingAddress: addressDetails })
         })
-        const result: any = await res.json()
-        console.log(result);
-        return result
-    } catch (error) {
-        console.log(error);
-        return error
+        const result = await res.json()
+
+        if (result.status === 'success') {
+            return { success: true, message: 'Order placed successfully', data: result }
+        }
+        return { success: false, message: result.message || 'Failed to place order' }
+    } catch {
+        return { success: false, message: 'Network error. Please try again.' }
     }
 }
-export async function createCheckoutSession(cartId: string, shippingAddress: { details: string, phone: string, city: string }) {
-    let sessionUrl = "";
+
+export async function createCheckoutSession(
+    cartId: string,
+    shippingAddress: { details: string; phone: string; city: string }
+): Promise<ActionResult> {
+    let sessionUrl = ""
 
     try {
-        const cookieStore = await cookies();
-        const token = cookieStore.get('userToken')?.value;
+        const token = await getToken()
+        if (!token) return { success: false, message: 'Please login first' }
 
-
-        // نبعت الـ URL بتاع الـ localhost أو الـ domain بتاعك كـ Query Parameter
-        const baseUrl = "http://localhost:3000";
-        const res = await fetch(`https://ecommerce.routemisr.com/api/v1/orders/checkout-session/${cartId}?url=${baseUrl}`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "token": token || ""
-            },
-            body: JSON.stringify({ shippingAddress })
-        });
-
-        const data = await res.json();
+        const res = await fetch(
+            `${API_BASE_URL}/orders/checkout-session/${cartId}?url=${BASE_URL}`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "token": token
+                },
+                body: JSON.stringify({ shippingAddress })
+            }
+        )
+        const data = await res.json()
 
         if (data.status === "success") {
-            // الـ API ده بيرجع الـ URL في خاصية اسمها session.url
-            sessionUrl = data.session.url;
+            sessionUrl = data.session.url
         } else {
-            return { error: data.message || "Failed to create session" };
+            return { success: false, message: data.message || "Failed to create checkout session" }
         }
-    } catch (error) {
-        return { error: "Internal Server Error" };
+    } catch {
+        return { success: false, message: "Network error. Please try again." }
     }
 
-    // الـ redirect لازم يحصل بره الـ try/catch في Next.js Actions
     if (sessionUrl) {
-        redirect(sessionUrl);
+        redirect(sessionUrl)
     }
+    return { success: false, message: 'Failed to get checkout URL' }
 }

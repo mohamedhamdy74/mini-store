@@ -1,21 +1,36 @@
-import { NextRequest, NextResponse } from "next/server";
-import { cookies } from "next/headers";
+import { NextResponse } from "next/server"
+import { cookies } from "next/headers"
+import { API_BASE_URL } from "@/lib/constants"
+
 export async function GET() {
     try {
         const cookieStore = await cookies()
         const token = cookieStore.get('token')?.value
-        const res = await fetch('https://ecommerce.routemisr.com/api/v1/cart', {
-            method: 'GET',
+
+        if (!token) {
+            return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
+        }
+
+        const res = await fetch(`${API_BASE_URL}/cart`, {
             headers: {
                 'Content-Type': 'application/json',
-                'token': token || ''
+                'token': token
             },
         })
-        const result: any = await res.json()
-        console.log(result);
+
+        if (!res.ok) {
+            return NextResponse.json(
+                { message: 'Failed to fetch cart' },
+                { status: res.status }
+            )
+        }
+
+        const result = await res.json()
         return NextResponse.json(result)
-    } catch (error) {
-        console.log(error);
-        return NextResponse.json(error)
+    } catch {
+        return NextResponse.json(
+            { message: 'Internal Server Error' },
+            { status: 500 }
+        )
     }
 }
