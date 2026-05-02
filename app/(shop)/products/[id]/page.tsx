@@ -6,32 +6,55 @@ import { Separator } from "@/components/ui/separator"
 import { ImageGallery } from "@/components/image-gallery"
 import { ProductActions } from "@/components/product-actions"
 import Link from "next/link"
+import { notFound } from "next/navigation"
 
 interface Props {
     params: Promise<{ id: string }>
 }
 
 export async function generateStaticParams() {
-    const productsData = await getAllProducts()
-    return productsData.data.map((product: Product) => ({
-        id: product.id,
-    }))
+    try {
+        const productsData = await getAllProducts()
+        if (!productsData?.data) return []
+        return productsData.data.map((product: Product) => ({
+            id: product.id,
+        }))
+    } catch {
+        return []
+    }
 }
 
 export async function generateMetadata({ params }: Props) {
-    const { id } = await params
-    const { data: product }: { data: Product } = await getProductById(id)
-    return {
-        title: `${product.title} | MiniStore`,
-        description: product.description,
+    try {
+        const { id } = await params
+        const { data: product }: { data: Product } = await getProductById(id)
+        if (!product) return { title: 'Not Found | MiniStore' }
+        return {
+            title: `${product.title} | MiniStore`,
+            description: product.description,
+        }
+    } catch {
+        return { title: 'Not Found | MiniStore' }
     }
 }
 
 export default async function ProductDetailsPage({ params }: Props) {
     const { id } = await params
-    const { data: product }: { data: Product } = await getProductById(id)
+    let product: Product | null = null
 
-    const allImages = [product.imageCover, ...product.images.filter(img => img !== product.imageCover)]
+    try {
+        const result = await getProductById(id)
+        product = result.data
+    } catch (error) {
+        // Fallback to 404 if API fails
+        notFound()
+    }
+
+    if (!product) {
+        notFound()
+    }
+
+    const allImages = [product.imageCover, ...(product.images || []).filter(img => img !== product?.imageCover)]
 
     return (
         <main className="min-h-[calc(100vh-72px)] bg-zinc-50 dark:bg-zinc-950">
