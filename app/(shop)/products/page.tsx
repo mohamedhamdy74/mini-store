@@ -1,5 +1,6 @@
 import { getProducts, getCategories, getBrands } from "@/lib/api/products";
 import { ProductList } from "@/components/product-list";
+import { MobileFilters } from "@/components/mobile-filters";
 import Link from "next/link";
 import {
     Pagination,
@@ -54,8 +55,11 @@ export default async function ProductsPage({
             </header>
 
             <div className="flex flex-col lg:flex-row gap-8">
-                {/* Sidebar */}
-                <aside className="w-full lg:w-1/4 shrink-0 space-y-8">
+                {/* Mobile Filters Toggle */}
+                <MobileFilters categories={categories} brands={brands} categoryId={categoryId} brandId={brandId} />
+
+                {/* Sidebar (Hidden on mobile) */}
+                <aside className="hidden lg:block w-full lg:w-1/4 shrink-0 space-y-8">
                     <div className="sticky top-28 bg-white dark:bg-zinc-900 rounded-2xl p-6 border border-zinc-200 dark:border-zinc-800 shadow-sm">
                         <div className="mb-6">
                             <h3 className="text-lg font-bold text-zinc-900 dark:text-zinc-100 mb-4">Categories</h3>

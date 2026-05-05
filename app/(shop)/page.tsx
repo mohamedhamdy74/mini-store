@@ -142,7 +142,7 @@ export default function Home() {
                         </div>
                     </div>
                     <div className="mt-12 border-t border-zinc-100 pt-8 text-center text-zinc-500 text-sm dark:border-zinc-900">
-                        © {new Date().getFullYear()} MiniStore. All rights reserved. Made with ❤️ for premium tech.
+                        © {new Date().getFullYear()} MiniStore. All rights reserved. Made with ❤️ by Mohamed Hamdy.
                     </div>
                 </div>
             </footer>

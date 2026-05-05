@@ -96,15 +96,16 @@ export default function Navbar() {
                         <div className="flex items-center gap-2">
                             {isAuthenticated ? (
                                 <>
-                                    <Link href="/wishlist">
-                                        <Button
-                                            variant="ghost"
-                                            size="icon"
-                                            className={cn(
-                                                "rounded-full relative transition-colors",
-                                                pathname === '/wishlist' && "bg-zinc-100 dark:bg-zinc-800"
-                                            )}
-                                        >
+                                    <div className="hidden sm:flex items-center gap-1">
+                                        <Link href="/wishlist">
+                                            <Button
+                                                variant="ghost"
+                                                size="icon"
+                                                className={cn(
+                                                    "rounded-full relative transition-colors",
+                                                    pathname === '/wishlist' && "bg-zinc-100 dark:bg-zinc-800"
+                                                )}
+                                            >
                                             <Heart className="h-5 w-5" />
                                             {wishlistCount > 0 && (
                                                 <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white">
@@ -168,6 +169,7 @@ export default function Navbar() {
                                             <LogOut className="h-5 w-5" />
                                         </Button>
                                     </form>
+                                    </div>
                                 </>
                             ) : (
                                 <>
@@ -221,6 +223,60 @@ export default function Navbar() {
                                 {link.label}
                             </Link>
                         ))}
+                        {isAuthenticated && (
+                            <>
+                                <div className="my-2 border-t border-zinc-100 dark:border-zinc-800" />
+                                <Link
+                                    href="/wishlist"
+                                    onClick={() => setMobileOpen(false)}
+                                    className={cn(
+                                        "flex justify-between items-center rounded-xl px-4 py-3 text-sm font-medium transition-colors",
+                                        pathname === '/wishlist'
+                                            ? "bg-zinc-100 text-zinc-900 dark:bg-zinc-800 dark:text-white"
+                                            : "text-zinc-500 hover:bg-zinc-50 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800/50 dark:hover:text-white"
+                                    )}
+                                >
+                                    <span>Wishlist</span>
+                                    {wishlistCount > 0 && <span className="bg-red-500 text-white px-2 py-0.5 rounded-full text-xs">{wishlistCount}</span>}
+                                </Link>
+                                <Link
+                                    href="/orders"
+                                    onClick={() => setMobileOpen(false)}
+                                    className={cn(
+                                        "block rounded-xl px-4 py-3 text-sm font-medium transition-colors",
+                                        pathname === '/orders'
+                                            ? "bg-zinc-100 text-zinc-900 dark:bg-zinc-800 dark:text-white"
+                                            : "text-zinc-500 hover:bg-zinc-50 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800/50 dark:hover:text-white"
+                                    )}
+                                >
+                                    My Orders
+                                </Link>
+                                <Link
+                                    href="/profile"
+                                    onClick={() => setMobileOpen(false)}
+                                    className={cn(
+                                        "block rounded-xl px-4 py-3 text-sm font-medium transition-colors",
+                                        pathname === '/profile'
+                                            ? "bg-zinc-100 text-zinc-900 dark:bg-zinc-800 dark:text-white"
+                                            : "text-zinc-500 hover:bg-zinc-50 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800/50 dark:hover:text-white"
+                                    )}
+                                >
+                                    My Profile
+                                </Link>
+                                <form action="/api/auth/signout" method="POST">
+                                    <button
+                                        type="button"
+                                        onClick={async () => {
+                                            const { signOut } = await import('@/lib/actions/auth')
+                                            await signOut()
+                                        }}
+                                        className="w-full text-left rounded-xl px-4 py-3 text-sm font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors"
+                                    >
+                                        Log Out
+                                    </button>
+                                </form>
+                            </>
+                        )}
                         <div className="pt-3">
                             <div className="relative">
                                 <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-zinc-400" />
